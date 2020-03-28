@@ -31,7 +31,7 @@ washer_radius     = 4 * screw_hole_radius;
 back_screw_hole_offset = 0;
 
 /* Distance between halves. */
-hand_separation        = 0;
+hand_separation        = 11;
 
 /* The approximate size of switch holes. Used to determine how
    thick walls can be, i.e. how much room around each switch hole to
@@ -45,7 +45,7 @@ use_notched_holes = true;
 /* Number of rows and columns in the matrix. You need to update
    staggering_offsets if you change n_cols. */
 n_rows = 4;
-n_cols = 5;
+n_cols = 6;
 
 /* Number of thumb keys (per hand), try 1 or 2. */
 n_thumb_keys = 1;
@@ -55,7 +55,7 @@ cable_hole_width = 12;
 
 /* Vertical column staggering offsets. The first element should
    be zero. */
-staggering_offsets = [0, 5, 11, 6, 3];
+staggering_offsets = [0, 5, 11, 6, 3, 0];
 
 /* Whether or not to split the spacer into quarters. */
 quarter_spacer = false;
@@ -113,7 +113,7 @@ module regular_key(position, size) {
 module thumb_key(position, size) {
   /* Create a hole for a 1x1.5 unit thumb key. */
   translate(position) {
-    scale([1, 1.5]) {
+    scale([1, 1]) {
       translate(-position) {
         regular_key(position, size);
       }
@@ -161,14 +161,18 @@ module right_half (switch_holes=true, key_size=key_hole_size) {
      spacer(). */
   x_offset = 0.5 * row_spacing;
   y_offset = 0.5 * column_spacing;
-  thumb_key_offset = y_offset + 0.5 * column_spacing;
+  thumb_key_offset = (y_offset - 8) + 0.5 * column_spacing;
   rotate_half() {
     add_hand_separation() {
       for (j=[0:(n_thumb_keys-1)]) {
         if (switch_holes == true) {
           switch_hole([x_offset + j*row_spacing, thumb_key_offset]);
+          switch_hole([x_offset + j*(row_spacing), thumb_key_offset + column_spacing]);
+            switch_hole([x_offset + j*(row_spacing), thumb_key_offset + 2 *  column_spacing]);
         } else {
           thumb_key([x_offset + j*row_spacing, thumb_key_offset], key_size);
+          thumb_key([x_offset + j*row_spacing, thumb_key_offset + column_spacing], key_size);
+          thumb_key([x_offset + j*row_spacing, thumb_key_offset + 2 * column_spacing], key_size);
         }
       }
       for (j=[0:(n_cols-1)]) {
@@ -313,9 +317,9 @@ module quartered_spacer()
 
 /* Create all four layers. */
 top_plate();
-translate([300, 0]) { switch_plate(); }
+translate([320, 0]) { switch_plate(); }
 translate([0, 150]) { bottom_plate(); }
-translate([300, 150]) {
+translate([320, 150]) {
   if (quarter_spacer == true) {
     quartered_spacer();
   }
