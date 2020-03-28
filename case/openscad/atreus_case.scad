@@ -31,7 +31,7 @@ washer_radius     = 4 * screw_hole_radius;
 back_screw_hole_offset = 0;
 
 /* Distance between halves. */
-hand_separation        = 11;
+hand_separation        = 14;
 
 /* The approximate size of switch holes. Used to determine how
    thick walls can be, i.e. how much room around each switch hole to
@@ -163,17 +163,18 @@ module right_half (switch_holes=true, key_size=key_hole_size) {
   x_offset = 0.5 * row_spacing;
   y_offset = 0.5 * column_spacing;
   thumb_key_offset = (y_offset - 8) + 0.5 * column_spacing;
+  extra_offset = 10;
   rotate_half() {
     add_hand_separation() {
       for (j=[0:(n_thumb_keys-1)]) {
         if (switch_holes == true) {
           switch_hole([x_offset + j*row_spacing, thumb_key_offset]);
-          switch_hole([x_offset + j*(row_spacing), thumb_key_offset + column_spacing]);
-            switch_hole([x_offset + j*(row_spacing), thumb_key_offset + 2 *  column_spacing]);
+          switch_hole([x_offset + j*(row_spacing), thumb_key_offset + column_spacing + extra_offset]);
+            switch_hole([x_offset + j*(row_spacing), thumb_key_offset + 2 *  column_spacing + extra_offset]);
         } else {
           thumb_key([x_offset + j*row_spacing, thumb_key_offset], key_size);
-          thumb_key([x_offset + j*row_spacing, thumb_key_offset + column_spacing], key_size);
-          thumb_key([x_offset + j*row_spacing, thumb_key_offset + 2 * column_spacing], key_size);
+          thumb_key([x_offset + j*row_spacing, thumb_key_offset + column_spacing + extra_offset], key_size);
+          thumb_key([x_offset + j*row_spacing, thumb_key_offset + 2 * column_spacing + extra_offset], key_size);
         }
       }
       for (j=[0:(n_cols-1)]) {
