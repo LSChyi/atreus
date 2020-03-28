@@ -55,7 +55,8 @@ cable_hole_width = 12;
 
 /* Vertical column staggering offsets. The first element should
    be zero. */
-staggering_offsets = [0, 5, 11, 6, 3, 0];
+staggering_offsets = [0, 5, 11, 6, 3, -1];
+row_keys = [4, 4, 4, 4, 4, 2];
 
 /* Whether or not to split the spacer into quarters. */
 quarter_spacer = false;
@@ -121,14 +122,14 @@ module thumb_key(position, size) {
   }
 }
 
-module column (bottom_position, switch_holes, key_size=key_hole_size) {
+module column (bottom_position, switch_holes, keys, key_size=key_hole_size) {
   /* Create a column of keys. */
   translate(bottom_position) {
-    for (i = [0:(n_rows-1)]) {
+    for (i = [0:(keys-1)]) {
       if (switch_holes == true) {
-        switch_hole([0, i*column_spacing]);
+        switch_hole([0, (n_rows - i - 1)*column_spacing]);
       } else {
-        regular_key([0, i*column_spacing], key_size);
+        regular_key([0, (n_rows - i - 1)*column_spacing], key_size);
       }
     }
   }
@@ -176,7 +177,7 @@ module right_half (switch_holes=true, key_size=key_hole_size) {
         }
       }
       for (j=[0:(n_cols-1)]) {
-        column([x_offset + (j+n_thumb_keys)*row_spacing, y_offset + staggering_offsets[j]], switch_holes, key_size);
+        column([x_offset + (j+n_thumb_keys)*row_spacing, y_offset + staggering_offsets[j]], switch_holes, row_keys[j], key_size);
       }
     }
   }
