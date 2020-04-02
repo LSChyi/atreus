@@ -40,7 +40,7 @@ switch_hole_size = 14;
 
 /* Sets whether the case should use notched holes. As far as I can
    tell these notches are not all that useful... */
-use_notched_holes = true;
+use_notched_holes = false;
 
 /* Number of rows and columns in the matrix. You need to update
    staggering_offsets if you change n_cols. */
@@ -85,7 +85,7 @@ function rz_fun(p, angle, center) = [cos(angle) * (p[0] - center[0]) - sin(angle
 module switch_hole(position, notches=use_notched_holes) {
   /* Cherry MX switch hole with the center at `position`. Sizes come
      from the ErgoDox design. */
-  hole_size    = 13.97;
+  hole_size    = 12.20;
   notch_width  = 3.5001;
   notch_offset = 4.2545;
   notch_depth  = 0.8128;
