@@ -31,7 +31,7 @@ washer_radius     = 4 * screw_hole_radius;
 back_screw_hole_offset = 1;
 
 /* Distance between halves. */
-hand_separation        = 14;
+hand_separation        = -40;
 
 /* The approximate size of switch holes. Used to determine how
    thick walls can be, i.e. how much room around each switch hole to
@@ -44,19 +44,20 @@ use_notched_holes = true;
 
 /* Number of rows and columns in the matrix. You need to update
    staggering_offsets if you change n_cols. */
-n_rows = 4;
-n_cols = 6;
+n_rows = 5;
+n_cols = 7;
 
 /* Number of thumb keys (per hand), try 1 or 2. */
-n_thumb_keys = 1;
+n_thumb_keys = 2;
+thumb_key_offsets = [ 14, 19 ];
 
 /* The width of the USB cable hole in the spacer. */
 cable_hole_width = 20;
 
 /* Vertical column staggering offsets. The first element should
    be zero. */
-staggering_offsets = [0, 5, 11, 6, 3, -1];
-row_keys = [4, 4, 4, 4, 4, 3];
+staggering_offsets = [-19, 0, 5, 8, 5, -2, -10];
+row_keys = [2, 5, 5, 5, 5, 5, 4];
 
 /* Whether or not to split the spacer into quarters. */
 quarter_spacer = false;
@@ -162,19 +163,15 @@ module right_half (switch_holes=true, key_size=key_hole_size) {
      spacer(). */
   x_offset = 0.5 * row_spacing;
   y_offset = 0.5 * column_spacing;
-  thumb_key_offset = (y_offset - 8) + 0.5 * column_spacing;
+  thumb_key_offset = 0;//(y_offset - 8) + 0.5 * column_spacing;
   extra_offset = 10;
   rotate_half() {
     add_hand_separation() {
       for (j=[0:(n_thumb_keys-1)]) {
         if (switch_holes == true) {
-          switch_hole([x_offset + j*row_spacing, thumb_key_offset]);
-          switch_hole([x_offset + j*(row_spacing), thumb_key_offset + column_spacing + extra_offset]);
-            switch_hole([x_offset + j*(row_spacing), thumb_key_offset + 2 *  column_spacing + extra_offset]);
+          switch_hole([x_offset + (j+1)*row_spacing, thumb_key_offset + thumb_key_offsets[j]]);
         } else {
-          thumb_key([x_offset + j*row_spacing, thumb_key_offset], key_size);
-          thumb_key([x_offset + j*row_spacing, thumb_key_offset + column_spacing + extra_offset], key_size);
-          thumb_key([x_offset + j*row_spacing, thumb_key_offset + 2 * column_spacing + extra_offset], key_size);
+          thumb_key([x_offset + (j+1)*row_spacing, thumb_key_offset + thumb_key_offsets[j]], key_size);
         }
       }
       for (j=[0:(n_cols-1)]) {
@@ -217,16 +214,16 @@ module right_screw_holes(hole_radius) {
     add_hand_separation() {
       screw_hole(hole_radius, washer_radius,
                  [row_spacing, 0],
-                 [-nudge, -nudge]);
+                 [-nudge-5, -nudge+2]);
       screw_hole(hole_radius, washer_radius,
                  [(n_cols+n_thumb_keys)*row_spacing, staggering_offsets[n_cols-1] + 1 * row_spacing ],
                  [nudge, -nudge]);
       screw_hole(hole_radius, washer_radius,
-                 [(n_cols+n_thumb_keys-1)*row_spacing, staggering_offsets[n_cols-1]],
+                 [(n_cols+n_thumb_keys-1)*row_spacing+7, staggering_offsets[n_cols-1]+10],
                  [nudge, -nudge]);
       screw_hole(hole_radius, washer_radius,
                  back_right,
-                 [nudge, nudge]);
+                 [nudge, nudge+1]);
     }
   }
 
@@ -321,9 +318,11 @@ module quartered_spacer()
 }
 
 /* Create all four layers. */
-top_plate();
-translate([320, 0]) { switch_plate(); }
-translate([0, 150]) { bottom_plate(); }
+//top_plate();
+linear_extrude(10)
+translate([0, 0]) { switch_plate(); }
+//translate([0, 150]) { bottom_plate(); }
+/*
 translate([320, 150]) {
   if (quarter_spacer == true) {
     quartered_spacer();
@@ -332,3 +331,4 @@ translate([320, 150]) {
     spacer();
   }
 }
+*/
